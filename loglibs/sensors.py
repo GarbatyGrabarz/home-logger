@@ -61,8 +61,6 @@ class Sensors(object):
         """Gets data from all sensors"""
         self.data.cpu = self._get_cpu_temp()
         self.data.timestamp = datetime.now()
-
-        print(self.bme.data.heat_stable)
         
         if self.bme.get_sensor_data():
             self.data.temp = self.bme.data.temperature
