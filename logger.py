@@ -4,12 +4,13 @@ import time
 import logging
 from loglibs.sensors import Sensors
 from loglibs.ifdb import IFDB
-import loglibs.config as p
+from loglibs.config import TEMP_OFFSET
+from loglibs.config import DATABASE
 
 
 def Main_program():
-    sensors = Sensors(p.TEMP_OFFSET)
-    database = IFDB('env_logs', 'grafana', 'raspberrypi', p.DATABASE)
+    sensors = Sensors(TEMP_OFFSET)
+    database = IFDB('env_logs', 'grafana', 'raspberrypi', DATABASE)
 
     while True:
 
