@@ -62,11 +62,12 @@ class Sensors(object):
         self.data.cpu = self._get_cpu_temp()
         self.data.timestamp = datetime.now()
         
-        if self.bme.get_sensor_data() and self.bme.data.heat_stable:
+        if self.bme.get_sensor_data():
             self.data.temp = self.bme.data.temperature
             self.data.pres = self.bme.data.pressure
             self.data.hum = self.bme.data.humidity
 
+        if self.bme.get_sensor_data() and self.bme.data.heat_stable:
             gas = self.bme.data.gas_resistance
 
             gas_offset = self.gas_base - gas
