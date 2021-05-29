@@ -65,13 +65,14 @@ class Sensors(object):
         if self.bme.get_sensor_data():
             self.data.temp = self.bme.data.temperature
             self.data.pres = self.bme.data.pressure
-            self.data.hum = self.bme.data.humidity
+            hum = self.bme.data.humidity
+            self.data.hum = hum
 
         if self.bme.get_sensor_data() and self.bme.data.heat_stable:
             gas = self.bme.data.gas_resistance
 
             gas_offset = self.gas_base - gas
-            hum_offset = self.data.hum - self.hum_base
+            hum_offset = hum - self.hum_base
 
             # Calculate hum_score as the distance from the hum_base
             if hum_offset > 0:
