@@ -17,7 +17,7 @@ def Main_program():
         sensors.read()
         database.add_points(sensors.data)
 
-        data_to_display = (f'{sensors.data.temp:.1f} \u00b0C¨ | '
+        data_to_display = (f'{sensors.data.temp:.1f} \u00b0C | '
                            f'{sensors.data.hum:.1f} %RH | '
                            f'{sensors.data.pres:.0f} hPa ')
 
