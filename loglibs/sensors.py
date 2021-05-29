@@ -64,11 +64,12 @@ class Sensors(object):
 
         print(self.bme.data.heat_stable)
         
-        if self.bme.get_sensor_data() and self.bme.data.heat_stable:
+        if self.bme.get_sensor_data():
             self.data.temp = self.bme.data.temperature
             self.data.pres = self.bme.data.pressure
             self.data.hum = self.bme.data.humidity
         
+        if self.bme.get_sensor_data() and self.bme.data.heat_stable:
             gas = self.bme.data.gas_resistance
 
             gas_offset = self.gas_base - gas
@@ -78,20 +79,20 @@ class Sensors(object):
             if hum_offset > 0:
                 hum_score = 100 - self.hum_base - hum_offset
                 hum_score /= 100 - self.hum_base
-                hum_score *= hum_weight
+                hum_score *= self.hum_weight
 
             else:
                 hum_score = self.hum_base + hum_offset
                 hum_score /= self.hum_base
-                hum_score *= hum_weight
+                hum_score *= self.hum_weight
 
             # Calculate gas_score as the distance from the gas_base
             if gas_offset > 0:
                 gas_score = gas / self.gas_base
-                gas_score *= gas_weight
+                gas_score *= self.gas_weight
 
             else:
-                gas_score = gas_weight
+                gas_score = self.gas_weight
 
             # Calculate air_quality_score.
             self.air = (hum_score + gas_score) * 100
