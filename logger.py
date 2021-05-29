@@ -27,7 +27,7 @@ def Main_program():
 
 if __name__ == "__main__":
 
-    logging.basicConfig(filename='/home/pi/Logger_logs.log',
+    logging.basicConfig(filename='/home/pi/logger.log',
                         level=logging.INFO,
                         format='%(asctime)s %(levelname)s: %(message)s',
                         datefmt='%Y-%m-%d %H:%M:%S')
