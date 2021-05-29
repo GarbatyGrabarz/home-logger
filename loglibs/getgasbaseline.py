@@ -34,5 +34,5 @@ while curr_time - start_time < burn_in_time:
         time.sleep(1)
 
 gas_baseline = sum(burn_in_data[-50:]) / 50.0
-with open('config.py', 'a') as file:
+with open('/home/pi/gas.txt', 'a') as file:
     file.write(f'GAS_BASE = {gas_baseline}')
