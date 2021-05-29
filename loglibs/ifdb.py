@@ -36,7 +36,8 @@ class IFDB(object):
                             "CPU": data.cpu,
                             "Temperature": data.temp,
                             "Pressure": data.pres,
-                            "Humidity": data.hum
+                            "Humidity": data.hum,
+                            "Air_quality": data.air
                         }
                     }
                 ]

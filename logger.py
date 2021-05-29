@@ -4,12 +4,11 @@ import time
 import logging
 from loglibs.sensors import Sensors
 from loglibs.ifdb import IFDB
-from loglibs.config import TEMP_OFFSET
-from loglibs.config import DATABASE
+from loglibs.config import TEMP_OFFSET, DATABASE, GAS_BASE
 
 
 def Main_program():
-    sensors = Sensors(TEMP_OFFSET)
+    sensors = Sensors(TEMP_OFFSET, GAS_BASE)
     database = IFDB('env_logs', 'grafana', 'raspberrypi', DATABASE)
 
     while True:
@@ -19,7 +18,8 @@ def Main_program():
 
         data_to_display = (f'{sensors.data.temp:.1f} \u00b0C | '
                            f'{sensors.data.hum:.1f} %RH | '
-                           f'{sensors.data.pres:.0f} hPa ')
+                           f'{sensors.data.pres:.0f} hPa | '
+                           f'Air quality: {sensors.data.air:.0f}%')
 
         print(data_to_display)
         time.sleep(60)

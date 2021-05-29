@@ -6,11 +6,18 @@ import bme680
 class Sensors(object):
     """Class wrapper for handling all sensors in one place"""
 
-    def __init__(self, TEMP_OFFSET):
+    def __init__(self, TEMP_OFFSET, GAS_BASE):
         self.offset = TEMP_OFFSET
+        
+        self.gas_base = GAS_BASE
+        self.hum_base = 40.0
+
+        self.hum_weight = 0.25
+        self.gas_weight = 1 - self.hum_weight
+
         self.bme = bme680.BME680()
-        self._setup_sensors()
         self.data = self.data_structure()        
+        self._setup_sensors()
 
     class data_structure(object):
         def __init__(self):
@@ -20,6 +27,7 @@ class Sensors(object):
             self.temp = float(0)
             self.pres = float(0)
             self.hum = float(-10)
+            self.air = float(-1)
 
     def _setup_sensors(self):
         """This method is to set all parameters for sensors in one place"""
@@ -31,10 +39,10 @@ class Sensors(object):
         self.bme.set_pressure_oversample(bme680.OS_2X)  # Was OS_4X
         self.bme.set_temperature_oversample(bme680.OS_2X)  # Was OS_8X
 
-        """Turn off measurements of Air quality. It warms up plate inside
-        the sensor potentially affecting the temp readings and its
-        sensitivity will not satisfy our needs anyway """
-        self.bme.set_gas_status(bme680.DISABLE_GAS_MEAS)
+        self.bme.set_gas_status(bme680.ENABLE_GAS_MEAS)
+        self.bme.set_gas_heater_temperature(320)
+        self.bme.set_gas_heater_duration(150)
+        self.bme.select_gas_heater_profile(0)
 
         """Set tepmerature offet"""
         self.bme.set_temp_offset(self.offset)
@@ -53,7 +61,35 @@ class Sensors(object):
         """Gets data from all sensors"""
         self.data.cpu = self._get_cpu_temp()
         self.data.timestamp = datetime.now()
-        if self.bme.get_sensor_data():
+        
+        if self.bme.get_sensor_data() and self.bme.data.heat_stable:
             self.data.temp = self.bme.data.temperature
             self.data.pres = self.bme.data.pressure
             self.data.hum = self.bme.data.humidity
+
+            gas = self.bme.data.gas_resistance
+
+            gas_offset = self.gas_base - gas
+            hum_offset = self.data.hum - self.hum_base
+
+            # Calculate hum_score as the distance from the hum_base
+            if hum_offset > 0:
+                hum_score = 100 - self.hum_base - hum_offset
+                hum_score /= 100 - self.hum_base
+                hum_score *= hum_weight
+
+            else:
+                hum_score = self.hum_base + hum_offset
+                hum_score /= self.hum_base
+                hum_score *= hum_weight
+
+            # Calculate gas_score as the distance from the gas_base
+            if gas_offset > 0:
+                gas_score = gas / self.gas_base
+                gas_score *= gas_weight
+
+            else:
+                gas_score = gas_weight
+
+            # Calculate air_quality_score.
+            self.air = (hum_score + gas_score) * 100
