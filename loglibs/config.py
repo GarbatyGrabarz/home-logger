@@ -1,3 +1,3 @@
-DATABASE = 'bedroom_2'
+DATABASE = 'room'
 
 TEMP_OFFSET = -5

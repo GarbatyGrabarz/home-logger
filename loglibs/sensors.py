@@ -7,10 +7,10 @@ class Sensors(object):
     """Class wrapper for handling all sensors in one place"""
 
     def __init__(self, TEMP_OFFSET):
+        self.offset = TEMP_OFFSET
         self.bme = bme680.BME680()
         self._setup_sensors()
-        self.data = self.data_structure()
-        self.offset = TEMP_OFFSET
+        self.data = self.data_structure()        
 
     class data_structure(object):
         def __init__(self):
