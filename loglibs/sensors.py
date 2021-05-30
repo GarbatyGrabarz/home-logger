@@ -6,11 +6,11 @@ import bme680
 class Sensors(object):
     """Class wrapper for handling all sensors in one place"""
 
-    def __init__(self, TEMP_OFFSET, GAS_BASE):
+    def __init__(self, TEMP_OFFSET, GAS_BASE, HUM_BASE):
         self.offset = TEMP_OFFSET
 
         self.gas_base = GAS_BASE
-        self.hum_base = 40.0
+        self.hum_base = HUM_BASE
 
         self.hum_weight = 0.25
         self.gas_weight = 1 - self.hum_weight

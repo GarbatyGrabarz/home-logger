@@ -4,12 +4,13 @@ import time
 import logging
 from loglibs.sensors import Sensors
 from loglibs.ifdb import IFDB
-from loglibs.config import TEMP_OFFSET, DATABASE, GAS_BASE
+from loglibs.config import TEMP_OFFSET, GAS_BASE, HUM_BASE
 
 
 def Main_program():
     sensors = Sensors(TEMP_OFFSET, GAS_BASE)
-    database = IFDB('env_logs', 'grafana', 'raspberrypi', DATABASE)
+    db = os.popen('hostname').readline().replace('\n', '')
+    database = IFDB('env_logs', 'grafana', 'raspberrypi', db)
 
     while True:
 
@@ -24,7 +25,7 @@ def Main_program():
 
         database.add_points(sensors.data)
         print(formatted_data)
-        time.sleep(5)
+        time.sleep(60)
 
 
 if __name__ == "__main__":
