@@ -1,5 +1,6 @@
 import bme680
 import time
+from datetime import datetime
 
 
 try:
@@ -34,6 +35,7 @@ while curr_time - start_time < burn_in_time:
         time.sleep(1)
 
 gas_baseline = sum(burn_in_data[-50:]) / 50.0
+timestamp = datetime.now().strftime('%Y.%m.%d %H:%M')
 print(f'\n Gas baseline = {gas_baseline:.0f} \u03A9')
 with open('/home/pi/gas.txt', 'a') as file:
-    file.write(f'GAS_BASE = {gas_baseline}')
+    file.write(f'{timestamp} - {gas_baseline}')
