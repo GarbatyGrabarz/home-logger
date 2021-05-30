@@ -13,20 +13,27 @@ def Main_program():
     db = os.popen('hostname').readline().replace('\n', '')
     database = IFDB('env_logs', 'grafana', 'raspberrypi', db)
 
+    start_time = time.time()
+    delay = 60  # In seconds
+
     while True:
 
-        sensors.data = sensors.data_structure()  # Reset all values to default
         sensors.read()
-        formatted_data = (f'{sensors.data.temp:.1f} \u00b0C'
-                          f' | {sensors.data.hum:.1f} %RH'
-                          f' | {sensors.data.pres:.0f} hPa')
+        sensors.read_air()
 
-        if sensors.air_readout():
-            formatted_data += f' | Air quality: {sensors.data.air:.0f}%'
+        if time.time() - start_time > delay:
 
-        database.add_points(sensors.data)
-        print(formatted_data)
-        time.sleep(60)
+            database.add_points(sensors.data)
+
+            formatted_data = (f'{sensors.data.temp:.1f} \u00b0C'
+                              f' | {sensors.data.hum:.1f} %RH'
+                              f' | {sensors.data.pres:.0f} hPa'
+                              f' | Air quality: {sensors.data.air:.0f}%')
+
+            print(formatted_data)
+            start_time = time.time()
+
+        time.sleep(1)
 
 
 if __name__ == "__main__":

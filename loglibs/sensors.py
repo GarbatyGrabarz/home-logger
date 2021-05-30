@@ -17,6 +17,7 @@ class Sensors(object):
 
         self.bme = bme680.BME680()
         self._setup_sensors()
+        self.data = self.data_structure()  # Reset all values to default
 
     class data_structure(object):
         def __init__(self):
@@ -66,7 +67,7 @@ class Sensors(object):
         self.data.pres = self.bme.data.pressure
         self.data.hum = self.bme.data.humidity
 
-    def air_readout(self):
+    def read_air(self):
         if self.bme.get_sensor_data() and self.bme.data.heat_stable:
             gas = self.bme.data.gas_resistance
 
@@ -94,6 +95,3 @@ class Sensors(object):
 
             # Calculate air_quality_score.
             self.data.air = (hum_score + gas_score) * 100
-            return True
-        else:
-            return False        
