@@ -8,7 +8,7 @@ class Sensors(object):
 
     def __init__(self, TEMP_OFFSET, GAS_BASE):
         self.offset = TEMP_OFFSET
-        
+
         self.gas_base = GAS_BASE
         self.hum_base = 40.0
 
@@ -16,7 +16,6 @@ class Sensors(object):
         self.gas_weight = 1 - self.hum_weight
 
         self.bme = bme680.BME680()
-        self.data = self.data_structure()        
         self._setup_sensors()
 
     class data_structure(object):
@@ -59,14 +58,17 @@ class Sensors(object):
 
     def read(self):
         """Gets data from all sensors"""
+        self.data = self.data_structure()  # Reset all values to default
+
         self.data.cpu = self._get_cpu_temp()
         self.data.timestamp = datetime.now()
-        
-        if self.bme.get_sensor_data() and self.bme.data.heat_stable:
+
+        if self.bme.get_sensor_data():
             self.data.temp = self.bme.data.temperature
             self.data.pres = self.bme.data.pressure
             self.data.hum = self.bme.data.humidity
-        
+
+        if self.bme.get_sensor_data() and self.bme.data.heat_stable:
             gas = self.bme.data.gas_resistance
 
             gas_offset = self.gas_base - gas
@@ -92,4 +94,4 @@ class Sensors(object):
                 gas_score = self.gas_weight
 
             # Calculate air_quality_score.
-            self.air = (hum_score + gas_score) * 100
+            self.data.air = (hum_score + gas_score) * 100
