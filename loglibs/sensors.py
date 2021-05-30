@@ -57,12 +57,6 @@ class Sensors(object):
         return cpu_temp
 
     def read(self):
-        """Gets data from all sensors"""
-        while not self.bme.get_sensor_data():
-            pass
-            
-        self.data = self.data_structure()  # Reset all values to default
-
         self.data.cpu = self._get_cpu_temp()
         self.data.timestamp = datetime.now()
 
@@ -71,6 +65,7 @@ class Sensors(object):
             self.data.pres = self.bme.data.pressure
             self.data.hum = self.bme.data.humidity
 
+    def air_readout(self):
         if self.bme.get_sensor_data() and self.bme.data.heat_stable:
             gas = self.bme.data.gas_resistance
 
@@ -98,3 +93,6 @@ class Sensors(object):
 
             # Calculate air_quality_score.
             self.data.air = (hum_score + gas_score) * 100
+            return True
+        else:
+            return False        

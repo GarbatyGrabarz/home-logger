@@ -1,4 +1,4 @@
-DATABASE = 'room'
+DATABASE = 'bedroom_2'
 
-TEMP_OFFSET = 0
+TEMP_OFFSET = -5
 GAS_BASE = 138000

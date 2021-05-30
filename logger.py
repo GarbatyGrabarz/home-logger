@@ -13,15 +13,18 @@ def Main_program():
 
     while True:
 
+        sensors.data = sensors.data_structure()  # Reset all values to default
         sensors.read()
+        formatted_data = (f'{sensors.data.temp:.1f} \u00b0C'
+                          f' | {sensors.data.hum:.1f} %RH'
+                          f' | {sensors.data.pres:.0f} hPa')
+
+        if sensors.air_readout():
+            formatted_data += f' | Air quality: {sensors.data.air:.0f}%'
+
         database.add_points(sensors.data)
-
-        print(f'{sensors.data.temp:.1f} \u00b0C | '
-              f'{sensors.data.hum:.1f} %RH | '
-              f'{sensors.data.pres:.0f} hPa | '
-              f'Air quality: {sensors.data.air:.0f}%')
-
-        time.sleep(60)
+        print(formatted_data)
+        time.sleep(5)
 
 
 if __name__ == "__main__":
