@@ -30,9 +30,10 @@ while curr_time - start_time < burn_in_time:
     if sensor.get_sensor_data() and sensor.data.heat_stable:
         gas = sensor.data.gas_resistance
         burn_in_data.append(gas)
-        print(f'Gas: {gas:.0f} \u03A9')
+        print(f'\rGas: {gas:.0f} \u03A9', end='\r')
         time.sleep(1)
 
 gas_baseline = sum(burn_in_data[-50:]) / 50.0
+print(f'\n Gas baseline = {gas_baseline:.0f} \u03A9')
 with open('/home/pi/gas.txt', 'a') as file:
     file.write(f'GAS_BASE = {gas_baseline}')
