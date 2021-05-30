@@ -2,6 +2,7 @@
 
 import time
 import logging
+import os
 from loglibs.sensors import Sensors
 from loglibs.ifdb import IFDB
 from loglibs.config import TEMP_OFFSET, GAS_BASE, HUM_BASE
