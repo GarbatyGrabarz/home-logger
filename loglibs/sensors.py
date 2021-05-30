@@ -21,12 +21,12 @@ class Sensors(object):
     class data_structure(object):
         def __init__(self):
             """Default values are delibretly incorrect"""
-            self.timestamp = datetime.strptime('2000-01-01', '%Y-%m-%d')
-            self.cpu = float(0)
-            self.temp = float(0)
-            self.pres = float(0)
-            self.hum = float(-10)
-            self.air = float(-1)
+            self.timestamp = None
+            self.cpu = None
+            self.temp = None
+            self.pres = None
+            self.hum = None
+            self.air = None
 
     def _setup_sensors(self):
         """This method is to set all parameters for sensors in one place"""
@@ -57,13 +57,14 @@ class Sensors(object):
         return cpu_temp
 
     def read(self):
+        while not self.bme.get_sensor_data():
+            pass  # Wait for the sensor
+
         self.data.cpu = self._get_cpu_temp()
         self.data.timestamp = datetime.now()
-
-        if self.bme.get_sensor_data():
-            self.data.temp = self.bme.data.temperature
-            self.data.pres = self.bme.data.pressure
-            self.data.hum = self.bme.data.humidity
+        self.data.temp = self.bme.data.temperature
+        self.data.pres = self.bme.data.pressure
+        self.data.hum = self.bme.data.humidity
 
     def air_readout(self):
         if self.bme.get_sensor_data() and self.bme.data.heat_stable:
