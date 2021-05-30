@@ -60,6 +60,9 @@ class Sensors(object):
         """Gets data from all sensors"""
         self.data = self.data_structure()  # Reset all values to default
 
+        while not self.bme.get_sensor_data():
+            pass
+
         self.data.cpu = self._get_cpu_temp()
         self.data.timestamp = datetime.now()
 
