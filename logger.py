@@ -16,12 +16,11 @@ def Main_program():
         sensors.read()
         database.add_points(sensors.data)
 
-        data_to_display = (f'{sensors.data.temp:.1f} \u00b0C | '
-                           f'{sensors.data.hum:.1f} %RH | '
-                           f'{sensors.data.pres:.0f} hPa | '
-                           f'Air quality: {sensors.data.air:.0f}%')
+        print(f'{sensors.data.temp:.1f} \u00b0C | '
+              f'{sensors.data.hum:.1f} %RH | '
+              f'{sensors.data.pres:.0f} hPa | '
+              f'Air quality: {sensors.data.air:.0f}%')
 
-        print(data_to_display)
         time.sleep(60)
 
 
