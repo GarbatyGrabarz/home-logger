@@ -8,7 +8,7 @@ from loglibs.config import TEMP_OFFSET, GAS_BASE, HUM_BASE
 
 
 def Main_program():
-    sensors = Sensors(TEMP_OFFSET, GAS_BASE)
+    sensors = Sensors(TEMP_OFFSET, GAS_BASE, HUM_BASE)
     db = os.popen('hostname').readline().replace('\n', '')
     database = IFDB('env_logs', 'grafana', 'raspberrypi', db)
 
