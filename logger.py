@@ -27,8 +27,10 @@ def Main_program():
 
             formatted_data = (f'{sensors.data.temp:.1f} \u00b0C'
                               f' | {sensors.data.hum:.1f} %RH'
-                              f' | {sensors.data.pres:.0f} hPa'
-                              f' | Air quality: {sensors.data.air:.0f}%')
+                              f' | {sensors.data.pres:.0f} hPa')
+
+            if sensors.data.air is not None:
+                formatted_data += f' | Air quality: {sensors.data.air:.0f}%'
 
             print(formatted_data)
             start_time = time.time()
