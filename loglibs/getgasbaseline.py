@@ -25,7 +25,10 @@ burn_in_data = []
 # Collect gas resistance burn-in values, then use the average
 # of the last 50 values to set the upper limit for calculating
 # gas_baseline.
-print('Collecting gas resistance burn-in data for 5 mins\n')
+bt = burn_in_time / 60
+timestamp = datetime.now().strftime('%Y.%m.%d %H:%M')
+
+print(f'{timestamp} Collecting gas resistance burn-in data for {bt:.0f} mins\n')
 while curr_time - start_time < burn_in_time:
     curr_time = time.time()
     if sensor.get_sensor_data() and sensor.data.heat_stable:
