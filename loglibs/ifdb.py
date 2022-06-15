@@ -1,53 +1,37 @@
-import pytz
 from influxdb import InfluxDBClient
 
 
 class IFDB(object):
     """This is a wrapper class for uploading data points to InfluxDB"""
 
-    def __init__(self, measurement, username, password, database):
-        self.timezone = pytz.timezone('Europe/Stockholm')
-        self.measurement = measurement
-        self.username = username
-        self.password = password
-        self.database = database
+    def __init__(self, configparser_obj):
+        config = configparser_obj['Database']
+        self.measurement = config['MEASUREMENT']
+        self.host = config['HOST']
+        self.username = config['USER']
+        self.password = config['PASS']
+        self.database = config['DATABASE']
 
-    def add_points(self, data):
+    def add_points(self, UCT_timestamp, data_dict):
         self._connect()
-        self._format_and_write(data)
+        self._pack_and_write(UCT_timestamp, data_dict)
         self.client.close()
 
     def _connect(self):
-        self.client = InfluxDBClient(host="localhost",
-                                     port=8086,
-                                     username=self.username,
-                                     password=self.password,
-                                     database=self.database
-                                     )
+        self.client = InfluxDBClient(
+            host=self.host,
+            port=8086,
+            username=self.username,
+            password=self.password,
+            database=self.database
+            )
 
-    def _format_and_write(self, data):
+    def _pack_and_write(self, UCT_timestamp, data_dict):
         """Formatting data for the upload. Uses "data" which is subclass
         of sensors class defined in main logger script"""
-        body = [
-                    {
-                        "measurement": self.measurement,
-                        "time": self._to_uct(data.timestamp),
-                        "fields": {
-                            "CPU": data.cpu,
-                            "Temperature": data.temp,
-                            "Pressure": data.pres,
-                            "Humidity": data.hum,
-                            "Air_quality": data.air
-                        }
-                    }
-                ]
-
+        body = [{
+            "measurement": self.measurement,
+            "time": UCT_timestamp,
+            "fields": data_dict
+            }]
         self.client.write_points(body)
-
-    def _to_uct(self, time):
-        """The database uses UCT timezone so all date-time has to be
-        converted to UCT-equivalent, e.g. 15:00 in Sweden
-        is reported as 13:00 UCT"""
-        UCT_Time = self.timezone.localize(time, is_dst=True)
-        UCT_Time = UCT_Time.astimezone(pytz.utc)
-        return UCT_Time
