@@ -2,19 +2,24 @@
 
 import time
 import logging
-import os
+import configparser
+
+from loglibs.config_control import valid_config
 from loglibs.sensors import Sensors
 from loglibs.ifdb import IFDB
-from loglibs.config import TEMP_OFFSET, GAS_BASE, HUM_BASE
 
 
 def Main_program():
-    sensors = Sensors(TEMP_OFFSET, GAS_BASE, HUM_BASE)
-    db = os.popen('hostname').readline().replace('\n', '')
-    database = IFDB('env_logs', 'grafana', 'raspberrypi', db)
+    config = configparser.ConfigParser()
+    config.read('config.ini')
 
+    if not valid_config(config):
+        raise SystemExit('Config.ini is invalid')
+
+    sensors = Sensors(config)
+    database = IFDB(config)
     start_time = time.time()
-    delay = 60  # In seconds
+    delay = float(config['Logger']['DELAY'])
 
     while True:
 
@@ -23,16 +28,18 @@ def Main_program():
 
         if time.time() - start_time > delay:
 
-            database.add_points(sensors.data)
+            database.add_points(sensors.UCT_timestamp, sensors.data)
 
-            formatted_data = (f'{sensors.data.temp:.1f} \u00b0C'
-                              f' | {sensors.data.hum:.1f} %RH'
-                              f' | {sensors.data.pres:.0f} hPa')
+            temp = sensors.data.get('Temperature')
+            hum = sensors.data.get('Humidity')
+            press = sensors.data.get('Pressure')
+            air = sensors.data.get('Air_quality')
 
-            if sensors.data.air is not None:
-                formatted_data += f' | Air quality: {sensors.data.air:.0f}%'
+            output = f'{temp:.1f} \u00b0C | {hum:.1f} %RH | {press:.0f} hPa'
+            if air is not None:
+                output += f' | Air quality: {air:.0f}%'
 
-            print(formatted_data)
+            print(output)
             start_time = time.time()
 
         time.sleep(1)
@@ -40,10 +47,11 @@ def Main_program():
 
 if __name__ == "__main__":
 
-    logging.basicConfig(filename='/home/pi/logger.log',
-                        level=logging.INFO,
-                        format='%(asctime)s %(levelname)s: %(message)s',
-                        datefmt='%Y-%m-%d %H:%M:%S')
+    logging.basicConfig(
+        filename='loglibs/logger.log',
+        level=logging.INFO,
+        format='%(asctime)s %(levelname)s: %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S')
     try:
         Main_program()
 
