@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import bme680
 import time
 import configparser
