@@ -12,11 +12,11 @@ class Sensors(object):
         air_config = configparser_obj['Air quality']
         db_config = configparser_obj['Database']
 
-        self.timezone = db_config['TIMEZONE']
+        self.timezone = pytz.timezone(db_config['TIMEZONE'])
         self.offset = float(temp_config['TEMP_OFFSET'])
         self.gas_base = float(air_config['GAS_BASE'])
         self.hum_base = float(air_config['HUM_BASE'])
-        self.hum_weight = float(air_config['HUM_CONTRIBUTION'])
+        self.hum_weight = float(air_config['HUM_CONTRIBUTION']) / 100
         self.gas_weight = 1 - self.hum_weight
 
         self.bme = bme680.BME680()
