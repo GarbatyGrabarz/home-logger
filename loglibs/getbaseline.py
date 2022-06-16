@@ -56,6 +56,6 @@ with open('gas_resistance_baseline.txt', 'a') as file:
 
 config = configparser.ConfigParser()
 config.read('config.ini')
-config['Air quality'] = {'GAS_BASE': gas_baseline}
+config['Air quality']['GAS_BASE'] = gas_baseline
 with open('config.ini', 'w') as configfile:
     config.write(configfile)
