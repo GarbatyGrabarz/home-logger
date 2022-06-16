@@ -11,7 +11,7 @@ from loglibs.ifdb import IFDB
 
 def Main_program():
     config = configparser.ConfigParser()
-    config.read('config.ini')
+    config.read('loglibs/config.ini')
 
     if not valid_config(config):
         raise SystemExit('Config.ini is invalid')
