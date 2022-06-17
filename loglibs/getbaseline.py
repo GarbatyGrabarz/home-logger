@@ -47,7 +47,7 @@ gas_baseline = sum(burn_in_data[-50:]) / 50.0
 gas_max = max(burn_in_data)
 timestamp = datetime.now().strftime('%Y.%m.%d %H:%M')
 
-print(f'\n Gas baseline = {gas_baseline:.0f} \u03A9')
+print(f'\nGas baseline = {gas_baseline:.0f} \u03A9')
 with open('gas_resistance_baseline.txt', 'a') as file:
     file.write(f'{timestamp} - '
                f'Average: {gas_baseline:.0f}, '
@@ -56,6 +56,6 @@ with open('gas_resistance_baseline.txt', 'a') as file:
 
 config = configparser.ConfigParser()
 config.read('config.ini')
-config['Air quality']['GAS_BASE'] = gas_baseline
+config['Air quality']['GAS_BASE'] = f'{gas_baseline:.0f}'
 with open('config.ini', 'w') as configfile:
     config.write(configfile)
