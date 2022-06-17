@@ -28,18 +28,20 @@ def Main_program():
 
         if time.time() - start_time > delay:
 
-            database.add_points(sensors.UCT_timestamp, sensors.data)
+            if database.add_points(sensors.UCT_timestamp, sensors.data):
 
-            temp = sensors.data.get('Temperature')
-            hum = sensors.data.get('Humidity')
-            press = sensors.data.get('Pressure')
-            air = sensors.data.get('Air_quality')
+                temp = sensors.data.get('Temperature')
+                hum = sensors.data.get('Humidity')
+                press = sensors.data.get('Pressure')
+                air = sensors.data.get('Air_quality')
 
-            output = f'{temp:.1f} \u00b0C | {hum:.1f} %RH | {press:.0f} hPa'
-            if air is not None:
-                output += f' | Air quality: {air:.0f}%'
+                out = f'{temp:.1f} \u00b0C | {hum:.1f} %RH | {press:.0f} hPa'
+                if air is not None:
+                    out += f' | Air quality: {air:.0f}%'
 
-            print(output)
+                print(out)
+            else:
+                print(f'Problem with connection to {database.host}')
             start_time = time.time()
 
         time.sleep(1)
