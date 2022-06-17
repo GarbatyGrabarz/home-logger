@@ -1,4 +1,5 @@
 from influxdb import InfluxDBClient
+from requests.exceptions import ConnectTimeout
 
 
 class IFDB(object):
@@ -13,9 +14,13 @@ class IFDB(object):
         self.database = config['DATABASE']
 
     def add_points(self, UCT_timestamp, data_dict):
-        self._connect()
-        self._pack_and_write(UCT_timestamp, data_dict)
-        self.client.close()
+        try:
+            self._connect()
+            self._pack_and_write(UCT_timestamp, data_dict)
+            self.client.close()
+            return True
+        except ConnectTimeout:
+            return False
 
     def _connect(self):
         self.client = InfluxDBClient(
@@ -23,7 +28,8 @@ class IFDB(object):
             port=8086,
             username=self.username,
             password=self.password,
-            database=self.database
+            database=self.database,
+            timeout=3
             )
 
     def _pack_and_write(self, UCT_timestamp, data_dict):
