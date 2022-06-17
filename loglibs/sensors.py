@@ -60,7 +60,7 @@ class Sensors(object):
         UCT_Time = UCT_Time.astimezone(pytz.utc)
         return UCT_Time
 
-    def _to_absHum(temp, rel_hum, version='wiki'):
+    def _to_absHum(self, temp, rel_hum, version='wiki'):
         """Calculates absolute humidity [g/m3] from relative humidity
         using Tetens equation: https://en.wikipedia.org/wiki/Tetens_equation
 
@@ -135,4 +135,4 @@ class Sensors(object):
                 gas_score = self.gas_weight
 
             # Calculate air_quality_score.
-            self.data['Air_quality'] = (hum_score + gas_score) * 100
+            self.data['Air quality'] = (hum_score + gas_score) * 100
