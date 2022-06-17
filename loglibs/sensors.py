@@ -60,6 +60,41 @@ class Sensors(object):
         UCT_Time = UCT_Time.astimezone(pytz.utc)
         return UCT_Time
 
+    def _to_absHum(temp, rel_hum, version='wiki'):
+        """Calculates absolute humidity [g/m3] from relative humidity
+        using Tetens equation: https://en.wikipedia.org/wiki/Tetens_equation
+
+        temp - Temperature [°C]
+        rel_hum - Relative humidity [%] (meaning values 0 - 100)
+
+        There is a difference in constants found here:
+        https://www.youtube.com/watch?v=EXjbjIgTgsA
+        The video is published at a later date. It could mean some update or
+        refinement of constants. The difference is on 3rd decimal place"""
+        import math
+
+        Mw = 18.02   # Constant: Molecular weigth of water [g/mol]
+        R = 8.31  # Constant: Universal gas constant [J/mol*K]
+        K = temp + 273.15  # Temperature [K]
+
+        constants = {
+            'wiki': {
+                'b': 17.27,
+                'c': 237.3},
+            'youtube': {
+                'b': 17.502,
+                'c': 240.97}}
+
+        b = constants[version]['b']
+        c = constants[version]['c']
+
+        saturation_vapor_pressure = 0.61078 * math.exp(
+            b * temp / (temp + c))  # [kPa]
+        vapor_pressure = rel_hum / 100 * saturation_vapor_pressure  # [kPa]
+        vapor_density = (vapor_pressure * Mw) / (R * K) * 1000  # [g/m3]
+
+        return vapor_density
+
     def read(self):
         while not self.bme.get_sensor_data():
             pass  # Wait for the sensor
@@ -69,6 +104,9 @@ class Sensors(object):
         self.data['Temperature'] = self.bme.data.temperature
         self.data['Pressure'] = self.bme.data.pressure
         self.data['Humidity'] = self.bme.data.humidity
+        self.data['Absolute humidity'] = self._to_absHum(
+            self.bme.data.temperature,
+            self.bme.data.humidity)
 
     def read_air(self):
         if self.bme.get_sensor_data() and self.bme.data.heat_stable:
