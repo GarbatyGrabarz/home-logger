@@ -12,7 +12,7 @@ try:
 except ValueError:
     offset_correction = 0
 
-config['Temperature']['TEMP_OFFSET'] = str(offset + offset_correction)
+config['Temperature']['TEMP_OFFSET'] = str(float(offset) + offset_correction)
 
 with open('config.ini', 'w') as configfile:
     config.write(configfile)
