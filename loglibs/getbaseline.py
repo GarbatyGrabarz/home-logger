@@ -59,3 +59,7 @@ config.read('config.ini')
 config['Air quality']['GAS_BASE'] = f'{gas_baseline:.0f}'
 with open('config.ini', 'w') as configfile:
     config.write(configfile)
+
+with open('resistances.txt', 'w') as file:
+    for resistance in burn_in_data:
+        file.write(f'{resistance}\n')
