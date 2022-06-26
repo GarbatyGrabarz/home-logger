@@ -14,6 +14,7 @@ def Main_program():
     config.read('loglibs/config.ini')
 
     if not valid_config(config):
+        print('Config.ini is invalid')  # Exception was not shown in terminal
         raise SystemExit('Config.ini is invalid')
 
     sensors = Sensors(config)
