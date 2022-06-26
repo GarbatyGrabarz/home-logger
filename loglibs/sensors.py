@@ -114,6 +114,7 @@ class Sensors(object):
 
             gas_offset = self.gas_base - gas
             hum_offset = self.data['Humidity'] - self.hum_base
+            self.data['Gas resistance'] = gas
 
             # Calculate hum_score as the distance from the hum_base
             if hum_offset > 0:
