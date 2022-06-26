@@ -48,7 +48,7 @@ gas_max = max(burn_in_data)
 timestamp = datetime.now().strftime('%Y.%m.%d %H:%M')
 
 print(f'\nGas baseline = {gas_baseline:.0f} \u03A9')
-with open('gas_resistance_baseline.txt', 'a') as file:
+with open('baseline_history.txt', 'a') as file:
     file.write(f'{timestamp} - '
                f'Average: {gas_baseline:.0f}, '
                f'Max: {gas_max:.0f}, '
@@ -60,6 +60,6 @@ config['Air quality']['GAS_BASE'] = f'{gas_baseline:.0f}'
 with open('config.ini', 'w') as configfile:
     config.write(configfile)
 
-with open('resistances.txt', 'w') as file:
+with open('baseline_raw.txt', 'w') as file:
     for resistance in burn_in_data:
         file.write(f'{resistance}\n')
