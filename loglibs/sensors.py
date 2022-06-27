@@ -2,7 +2,7 @@ import os
 import pytz
 from datetime import datetime
 import bme680
-from config_control import CheckFlag
+from loglibs.config_control import CheckFlag
 
 
 class Sensors(object):
@@ -43,7 +43,6 @@ class Sensors(object):
             self.bme.select_gas_heater_profile(0)
         else:
             self.bme.set_gas_status(bme680.DISABLE_GAS_MEAS)
-
 
         """Set tepmerature offet"""
         self.bme.set_temp_offset(self.offset)
