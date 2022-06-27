@@ -2,8 +2,8 @@ import pytz
 
 
 def valid_config(ini):
-    """The functinumberson takes configparser object as input.
-    Named ini to make it shorter"""
+    """The function takes configparser object as an input and check for
+    corectness. Named ini to make it shorter"""
     try:
         """ First load all variables to see if they exist (KeyError if not)
         No file also renders KeyError"""
@@ -20,6 +20,14 @@ def valid_config(ini):
         _ = ini['Database']['DATABASE']
         _ = ini['Database']['MEASUREMENT']
         tz = ini['Database']['TIMEZONE']
+
+        # Flags
+        get_air = CheckFlag(ini['Air quality']['GET_AIR'])
+        if get_air is True or get_air is False:
+            pass
+        else:
+            print('Flag is not True or False')
+            raise ValueError
 
         """ Check if data is correct"""
 
@@ -55,3 +63,12 @@ def valid_config(ini):
         return False
 
     return True
+
+
+def CheckFlag(text):
+    if text.lower() == 'true':
+        return True
+    elif text.lower() == 'false':
+        return False
+    else:
+        return None

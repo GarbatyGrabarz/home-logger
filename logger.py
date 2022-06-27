@@ -4,7 +4,7 @@ import time
 import logging
 import configparser
 
-from loglibs.config_control import valid_config
+from loglibs.config_control import valid_config, CheckFlag
 from loglibs.sensors import Sensors
 from loglibs.ifdb import IFDB
 
@@ -25,7 +25,8 @@ def Main_program():
     while True:
 
         sensors.read()
-        sensors.read_air()
+        if CheckFlag(config['Air quality']['GET_AIR']):
+            sensors.read_air()
 
         if time.time() - start_time > delay:
 

@@ -2,6 +2,7 @@ import os
 import pytz
 from datetime import datetime
 import bme680
+from config_control import CheckFlag
 
 
 class Sensors(object):
@@ -14,6 +15,7 @@ class Sensors(object):
 
         self.timezone = pytz.timezone(db_config['TIMEZONE'])
         self.offset = float(temp_config['TEMP_OFFSET'])
+        self.get_air = CheckFlag(air_config['GET_AIR'])
         self.gas_base = float(air_config['GAS_BASE'])
         self.hum_base = float(air_config['HUM_BASE'])
         self.hum_weight = float(air_config['HUM_CONTRIBUTION']) / 100
@@ -34,10 +36,14 @@ class Sensors(object):
         self.bme.set_pressure_oversample(bme680.OS_2X)  # Was OS_4X
         self.bme.set_temperature_oversample(bme680.OS_2X)  # Was OS_8X
 
-        self.bme.set_gas_status(bme680.ENABLE_GAS_MEAS)
-        self.bme.set_gas_heater_temperature(320)
-        self.bme.set_gas_heater_duration(150)
-        self.bme.select_gas_heater_profile(0)
+        if self.get_air:
+            self.bme.set_gas_status(bme680.ENABLE_GAS_MEAS)
+            self.bme.set_gas_heater_temperature(320)
+            self.bme.set_gas_heater_duration(150)
+            self.bme.select_gas_heater_profile(0)
+        else:
+            self.bme.set_gas_status(bme680.DISABLE_GAS_MEAS)
+
 
         """Set tepmerature offet"""
         self.bme.set_temp_offset(self.offset)
