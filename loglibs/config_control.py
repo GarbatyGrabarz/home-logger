@@ -2,11 +2,12 @@ import pytz
 
 
 def valid_config(ini):
-    """The function takes configparser object as an input and check for
-    corectness. Named ini to make it shorter"""
+    """ Takes configparser object as an input and checks for correctness.
+    Named ini to make it shorter """
     try:
         """ First load all variables to see if they exist (KeyError if not)
         No file also renders KeyError"""
+
         delay = float(ini['Logger']['DELAY'])
         _ = float(ini['Temperature']['TEMP_OFFSET'])
         gas_base = float(ini['Air quality']['GAS_BASE'])
@@ -54,9 +55,8 @@ def valid_config(ini):
             raise ValueError
 
     except KeyError:
-        print(
-            'Missing variable (or file). See example_config.ini for reference'
-            )
+        print('Missing a variable or the config file.')
+        print('See example_config.ini for reference.')
         return False
 
     except ValueError:

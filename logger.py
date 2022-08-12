@@ -10,13 +10,17 @@ from loglibs.ifdb import IFDB
 
 
 def Main_program():
+    # Loading config
     config = configparser.ConfigParser()
     config.read('loglibs/config.ini')
 
+    # Checking config
     if not valid_config(config):
-        print('Config.ini is invalid')  # Exception was not shown in terminal
-        raise SystemExit('Config.ini is invalid')
+        error_msg = 'Config.ini is invalid'
+        print(error_msg)  # Exception was not shown in the terminal
+        raise SystemExit(error_msg)
 
+    # Creating objects and variables
     sensors = Sensors(config)
     database = IFDB(config)
     start_time = time.time()

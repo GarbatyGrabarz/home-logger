@@ -6,7 +6,7 @@ from loglibs.config_control import CheckFlag
 
 
 class Sensors(object):
-    """Class wrapper for handling all sensors in one place"""
+    """ Class wrapper for handling all sensors """
 
     def __init__(self, configparser_obj):
         temp_config = configparser_obj['Temperature']
@@ -27,7 +27,7 @@ class Sensors(object):
         self.UCT_timestamp = None
 
     def _setup_sensors(self):
-        """This method is to set all parameters for sensors in one place"""
+        """ Method to set all parameters for sensors """
 
         """The higher the oversampling, the greater the reduction in noise,
         but also reduction of accuracy.
@@ -48,8 +48,9 @@ class Sensors(object):
         self.bme.set_temp_offset(self.offset)
 
     def _get_cpu_temp(self):
-        """Reading Raspberry PI CPU temp and returns as float
-        (converted from string) If string stripping fails it returns float 0"""
+        """ Reads Raspberry PI CPU temp and returns as float (converted
+        from string). If string stripping fails it returns float 0 """
+
         t_read = os.popen("vcgencmd measure_temp").readline()
         try:
             cpu_temp = float(t_read.replace("temp=", "").replace("'C\n", ""))
@@ -61,6 +62,7 @@ class Sensors(object):
         """The database uses UCT timezone so all date-time has to be
         converted to UCT-equivalent, e.g. 15:00 in Sweden
         is reported as 13:00 UCT"""
+
         UCT_Time = self.timezone.localize(time, is_dst=True)
         UCT_Time = UCT_Time.astimezone(pytz.utc)
         return UCT_Time

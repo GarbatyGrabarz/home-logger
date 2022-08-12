@@ -3,7 +3,7 @@ from requests.exceptions import ConnectTimeout
 
 
 class IFDB(object):
-    """This is a wrapper class for uploading data points to InfluxDB"""
+    """ Wrapper class for uploading data points to InfluxDB """
 
     def __init__(self, configparser_obj):
         config = configparser_obj['Database']
@@ -35,6 +35,7 @@ class IFDB(object):
     def _pack_and_write(self, UCT_timestamp, data_dict):
         """Formatting data for the upload. Uses "data" which is subclass
         of sensors class defined in main logger script"""
+
         body = [{
             "measurement": self.measurement,
             "time": UCT_timestamp,
