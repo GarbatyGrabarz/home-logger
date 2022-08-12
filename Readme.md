@@ -45,15 +45,15 @@ Configuration should be filled correctly before the start. However, you might fi
 
 ## Logger
 
-**DELAY** - How many seconds to wait between collecting data point (minimum 2 seconds)
+`DELAY` - How many seconds to wait between collecting data point (minimum 2 seconds)
 
 ## Database
 
-**HOST** - Address (typically IP) where your InfluxDB is located. If you have the database on the same device `localhost` should work.
-**USER** and **PASS** - User and password to access the database.
-**DATABASE** - Name you gave the database when you created it.
-**MEASUREMENT** - created dynamically so whatever you type here should be OK. Feel free to keep the default name.
-**TIMEZONE** - Time zone of the place you are getting the data from. It must work with pytz. If you are not sure you can either check it [here](https://gist.github.com/heyalexej/8bf688fd67d7199be4a1682b3eec7568) or run that code yourself:
+`HOST` - Address (typically IP) where your InfluxDB is located. If you have the database on the same device `localhost` should work.
+`USER` and `PASS` - User and password to access the database.
+`DATABASE` - Name you gave the database when you created it.
+`MEASUREMENT` - created dynamically so whatever you type here should be OK. Feel free to keep the default name.
+`TIMEZONE` - Time zone of the place you are getting the data from. It must work with pytz. If you are not sure you can either check it [here](https://gist.github.com/heyalexej/8bf688fd67d7199be4a1682b3eec7568) or run that code yourself:
 
 ```python
 import pytz
@@ -67,19 +67,19 @@ The sensor sometimes gives values that are way off. From what I've gathered from
 Here is the thing... This whole air quality sensing is *very* weird.
 
 ### How it works?
-How the sensor works is quite simple: it burns the gas and checks what resistance came out of it (suuuuuper simplifying). Clean air - high resistance, "dirty" air - low resistance. So what you do is, you get a **reference** by burning some clean air, and that resistance becomes your 100%. Everything recorded later will be dirtier, thus lower resistance, thus lower percentage. That reference is the **GAS_BASE** in the config.
+How the sensor works is quite simple: it burns the gas and checks what resistance came out of it (suuuuuper simplifying). Clean air - high resistance, "dirty" air - low resistance. So what you do is, you get a **reference** by burning some clean air, and that resistance becomes your 100%. Everything recorded later will be dirtier, thus lower resistance, thus lower percentage. That reference is the `GAS_BASE` in the config.
 
 Let's say I recorded the reference is a clean environment and got 150 kΩ (the sensor uses Ω but let's use fewer zeros for our mental health). After sitting in the room for a while, sweating and breathing out I get 90 kΩ resulting in 60% air quality (150 / 90).
 
 To get the reference value check out the end of this document
 
 ### What's up with the humidity?
-I have read [somewhere](https://github.com/G6EJD/BME680-Example) that humidity also affects our perception of air quality and that humans prefer 40% relative humidity (**HUM_BASE** in the config). How much each factor (quality or humidity) affects the score is determined by **HUM_CONTRIBUTION** which is expressed in percentage. Example: 25 means that only 1/4 of the humidity score (how far humidity is from the selected base) affects the overall airt quality score.
+I have read [somewhere](https://github.com/G6EJD/BME680-Example) that humidity also affects our perception of air quality and that humans prefer 40% relative humidity (`HUM_BASE` in the config). How much each factor (quality or humidity) affects the score is determined by `HUM_CONTRIBUTION` which is expressed in percentage. Example: 25 means that only 1/4 of the humidity score (how far humidity is from the selected base) affects the overall airt quality score.
 
 That text mentions also contribution from the temperature but as we all know from the Thermostat Wars, this parameter seems to be much more individual based so I have ignored it.
 
 ### Does it really work?
-No. At least I am not convinced. That's why **GET_AIR** flag exists so this feature can be completely switched off.
+No. At least I am not convinced. That's why `GET_AIR` flag exists so this feature can be completely switched off.
 
 First, the most obvious problem is getting a reference that is not clean enough and ending up with scores higher than 100% which makes no practical sense (program caps at 100%).
 
