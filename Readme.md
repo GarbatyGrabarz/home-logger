@@ -66,6 +66,7 @@ The sensor sometimes gives values that are way off. From what I've gathered from
 ## Air quality
 Here is the thing... This whole air quality sensing is *very* weird.
 
+
 ### How it works?
 How the sensor works is quite simple: it burns the gas and checks what resistance came out of it (suuuuuper simplifying). Clean air - high resistance, "dirty" air - low resistance. So what you do is, you get a **reference** by burning some clean air, and that resistance becomes your 100%. Everything recorded later will be dirtier, thus lower resistance, thus lower percentage. That reference is the `GAS_BASE` in the config.
 
@@ -73,10 +74,12 @@ Let's say I recorded the reference is a clean environment and got 150 kΩ (the s
 
 To get the reference value check out the end of this document
 
+
 ### What's up with the humidity?
 I have read [somewhere](https://github.com/G6EJD/BME680-Example) that humidity also affects our perception of air quality and that humans prefer 40% relative humidity (`HUM_BASE` in the config). How much each factor (quality or humidity) affects the score is determined by `HUM_CONTRIBUTION` which is expressed in percentage. Example: 25 means that only 1/4 of the humidity score (how far humidity is from the selected base) affects the overall airt quality score.
 
 That text mentions also contribution from the temperature but as we all know from the Thermostat Wars, this parameter seems to be much more individual based so I have ignored it.
+
 
 ### Does it really work?
 No. At least I am not convinced. That's why `GET_AIR` flag exists so this feature can be completely switched off.
